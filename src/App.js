@@ -1,14 +1,14 @@
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef, useCallback } from "react";
 
 const useNetwork = (onChange) => {
   const [status, setStatus] = useState(navigator.onLine);
 
-  const handleChange = () => {
+  const handleChange = useCallback(() => {
     if (typeof onChange === "function") {
       onChange(navigator.onLine);
     }
     setStatus(navigator.onLine);
-  };
+  }, [onChange]);
 
   useEffect(() => {
     window.addEventListener("online", handleChange);
