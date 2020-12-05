@@ -1,35 +1,33 @@
 import { useEffect, useState, useRef, useCallback } from "react";
 
-const useNetwork = (onChange) => {
-  const [status, setStatus] = useState(navigator.onLine);
+const useScroll = () => {
+  const [state, setState] = useState({
+    x: 0,
+    y: 0,
+  });
 
-  const handleChange = useCallback(() => {
-    if (typeof onChange === "function") {
-      onChange(navigator.onLine);
-    }
-    setStatus(navigator.onLine);
-  }, [onChange]);
-
+  const onScroll = () => {
+    setState({
+      x: window.scrollX,
+      y: window.scrollY,
+    });
+  };
   useEffect(() => {
-    window.addEventListener("online", handleChange);
-    window.addEventListener("offline", handleChange);
+    window.addEventListener("scroll", onScroll);
     return () => {
-      window.removeEventListener("online", handleChange);
-      window.removeEventListener("offline", handleChange);
+      window.removeEventListener("scroll", onScroll);
     };
-  }, [handleChange]);
-
-  return status;
+  }, []);
+  return state;
 };
 
 function App() {
-  const handleNetworkChange = (online) => {
-    console.log(online ? "we js went online" : "we are offline");
-  };
-  const onLine = useNetwork(handleNetworkChange);
+  const { y } = useScroll();
   return (
-    <div className="App">
-      <h1>{onLine ? "onLine" : "offLine"}</h1>
+    <div className="App" style={{ height: "1000vh" }}>
+      <h1 style={{ position: "fixed", color: y < 100 ? "red" : "blue" }}>
+        HELL
+      </h1>
     </div>
   );
 }
